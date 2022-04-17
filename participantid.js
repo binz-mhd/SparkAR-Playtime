@@ -8,35 +8,42 @@ const Participants = require('Participants');
 const minTurnCount = 2;
 const maxTurnCount = 4;
 
-var burstCountdown = 0;
+var BurstCountdown = 0;
 var dudei = 8;
 var curplayer = 0;
 var activeparticipants = [];
 
 (async function () {
-  const self = await Participants.self;
+  try{
+    const self = await Participants.self;
   const Participants = await Participants.getAllotherParticipants();
+  }catch(e){} 
   
-  
-  Participants.push(self);
+  try{
+    Participants.push(self);
 
-
-  Participants.forEach(function(Participant){
-    participant.isActiveInSameEffect.monitor().subscribeWithSnapshot({
-      userIndex:Participants.indexof(Participants),
-    },function (event, snapshot) {
-      let Participant =   Participants [snapshot.userIndex];
-      OnUserEnterOrLeave(event.newValue,participant);
+    Participants.forEach(function(Participant){
+      participant.isActiveInSameEffect.monitor().subscribeWithSnapshot({
+        userIndex:Participants.indexof(Participants),
+      },function (event, snapshot) {
+        let Participant =   Participants [snapshot.userIndex];
+        OnUserEnterOrLeave(event.newValue,participant);
+      });
+    activeparticipants.push(participant);
     });
-  activeparticipants.push(participant);
-  });
+  
+    }catch(e){}
+  
 
-  //Add the same 'Enter/Leave Effect' call back to neww call joiners
+
+  
+  //Add the same 'Enter/Leave Effect' call back to new call joiners
+
   Participants.onOtherParticipantAdded().subscribe(function(participant){
       Participants.push (participant);
       participant.isActiveInSameEffect.monitor({fireonInitialValue:true}).subscribeWithSnapshot({
         userIndex: participant.indexof(participant),
-      }, function(event, snapshot) {
+      }, function(event,snapshot) {
         let participant = Participants[snapshot,userIndex];
         OnUserEnterOrLeave(event,newValue,participant);
       });
@@ -75,5 +82,3 @@ var activeparticipants = [];
     });
 }
 })();
-
- 
